@@ -1,0 +1,121 @@
+# IMPORT THE LIBRABRYS
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error, r2_score
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+# LOAD THE DATASET
+
+from google.colab import files
+uploaded = files.upload()
+
+# DATA EXPLORATION 
+
+df = pd.read_csv('credit_card_fraud_dataset.csv')
+print("Dataset Info:")
+print(df.info())
+
+# Show first few rows
+print("\nFirst 5 rows:")
+print(df.head())
+
+# Check for missing values
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# Class distribution
+print("\nClass Distribution (0 = Non-Fraud, 1 = Fraud):")
+print(df['Amount'].value_counts())
+
+# Plot class distribution
+plt.figure(figsize=(6,4))
+sns.countplot(x='Amount', data=df)
+plt.title("Fraud vs Non-Fraud Transactions")
+plt.xticks([0, 1], ['Non-Fraud (0)', 'Fraud (1)'])
+plt.show()
+
+
+# Describe statistical summary
+print("\nStatistical Summary:")
+print(df.describe())
+
+# Compare transaction amounts
+plt.figure(figsize=(10,6))
+sns.boxplot(x='Amount', y='Amount', data=df)
+plt.title("Transaction Amounts ")
+plt.show()
+
+# MISSING VALUES
+
+# Assuming 'credit_card_fraud_dataset.csv' is in the current directory
+df = pd.read_csv('credit_card_fraud_dataset.csv')  # Define df here
+
+# Check for missing values
+missing_values = df.isnull().sum()
+print("Missing Values Per Column:\n", missing_values)
+
+# Total missing values
+total_missing = missing_values.sum()
+print("\nTotal Missing Values in Dataset:", total_missing)
+
+# Check for duplicate rows
+duplicate_rows = df.duplicated().sum()
+print("\nNumber of Duplicate Rows:", duplicate_rows)
+
+#BAR CHART
+
+# Bar plot
+df = pd.read_csv('credit_card_fraud_dataset.csv')
+plt.figure(figsize=(6,4))
+# Access the 'Amount' and 'MerchantID' columns within the DataFrame using df['column_name']
+sns.barplot(x=df['Amount'].index, y=df['MerchantID'].values, palette='pastel')  
+plt.title("Transaction Counts: Fraud vs Non-Fraud")
+plt.xticks([0, 1], ['Non-Fraud (0)', 'Fraud (1)'])
+plt.ylabel("Count")
+plt.xlabel("Class")
+plt.show()
+
+#LINE PLOT
+
+# 4. Line plot of Amount over TransactionDate for fraudulent transactions
+plt.figure(figsize=(10,5))
+
+# Filter frauds and sample 300 (or fewer if not enough)
+fraud_df = df[df['IsFraud'] == 1]
+df_sample = fraud_df.sample(n=min(30, len(fraud_df)), random_state=1)
+
+# Sort by date for time series
+df_sample = df_sample.sort_values('TransactionDate')
+
+# Plot
+sns.lineplot(data=df_sample, x='TransactionDate', y='Amount', color='red')
+plt.title('Fraudulent Transaction Amounts Over Time')
+plt.xlabel('Transaction Date')
+plt.ylabel('Amount')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+#SCATTER PLOT
+
+df_sample = df.sample(n=30, random_state=1)
+
+
+plt.figure(figsize=(10,5))
+sns.scatterplot(data=df_sample, x='TransactionDate', y='Amount', hue='IsFraud', palette='coolwarm', alpha=1.0)
+plt.title('Transaction Amounts Over Time (Sample of 100)')
+plt.xlabel('Transaction Date')
+plt.ylabel('Amount')
+plt.xticks(rotation=35)
+plt.legend(title='Is Fraud')
+plt.tight_layout()
+plt.show()
